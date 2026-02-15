@@ -3,31 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Perfect Fliqlo</title>
+<title>Transparent Fliqlo</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
 
 <style>
 :root {
-    --bg-color: #000;
-    --card-bg: #1a1a1a; /* رنگ پس‌زمینه کارت‌ها */
-    --text-color: #ddd; /* رنگ اعداد و متن‌ها */
+    /* تغییر مهم: پس‌زمینه شفاف شد */
+    --bg-color: transparent;
     
-    /* سایزها را منطقی کردم تا عدد داخل کادر جا شود */
+    --card-bg: #1a1a1a; /* کارت‌ها تیره می‌مانند */
+    --text-color: #ddd;
+    
     --card-width: 200px;
     --card-height: 300px;
-    --font-size: 190px; /* فونت کوچکتر شد تا خط برش درست دیده شود */
+    --font-size: 190px;
     
     --border-radius: 16px;
-    --anim-speed: 0.9s; /* انیمیشن کندتر و سنگین‌تر */
+    --anim-speed: 0.9s;
 }
 
-body {
+html, body {
     margin: 0;
-    background: var(--bg-color);
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color); /* شفاف */
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     font-family: 'Oswald', sans-serif;
     overflow: hidden;
 }
@@ -45,14 +48,15 @@ body {
     background: var(--card-bg);
     border-radius: var(--border-radius);
     color: var(--text-color);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* سایه طبیعی‌تر */
+    /* سایه را کمی قوی‌تر کردم تا روی پس‌زمینه سفید نوشن هم خودش را جدا کند */
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
 }
 
 /* خط وسط */
 .flip-unit::before {
     content: '';
     position: absolute;
-    top: 52%;
+    top: 50%;
     left: 0;
     width: 100%;
     height: 3px;
@@ -61,7 +65,6 @@ body {
     transform: translateY(-50%);
 }
 
-/* استایل کلی نیمه‌ها */
 .top, .bottom, .top-new, .bottom-new {
     position: absolute;
     left: 0;
@@ -73,21 +76,19 @@ body {
     background: var(--card-bg);
 }
 
-/* نگهدارنده عدد برای تراز دقیق */
 .digit-wrapper {
     position: absolute;
     left: 0;
     width: 100%;
-    height: 200%; /* ارتفاع دو برابر */
+    height: 200%;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: var(--font-size);
     font-weight: 700;
-    line-height: 1; /* این خط حیاتی است */
+    line-height: 1;
 }
 
-/* نیمه بالا */
 .top, .top-new {
     top: 0;
     border-radius: var(--border-radius) var(--border-radius) 0 0;
@@ -98,7 +99,6 @@ body {
     top: 0;
 }
 
-/* نیمه پایین */
 .bottom, .bottom-new {
     bottom: 0;
     border-radius: 0 0 var(--border-radius) var(--border-radius);
@@ -109,7 +109,6 @@ body {
     bottom: 0;
 }
 
-/* انیمیشن‌ها */
 .top-new { z-index: 2; transform: rotateX(0deg); }
 .bottom-new { z-index: 1; transform: rotateX(90deg); }
 
@@ -120,7 +119,7 @@ body {
 
 .flipping .bottom-new {
     animation: flip-bottom var(--anim-speed) ease-in-out forwards;
-    animation-delay: calc(var(--anim-speed) * 0.45); /* هماهنگی دقیق با سرعت جدید */
+    animation-delay: calc(var(--anim-speed) * 0.45);
     z-index: 4;
 }
 
@@ -134,7 +133,6 @@ body {
     100% { transform: rotateX(0deg); }
 }
 
-/* لیبل‌ها (AM/PM و روز هفته) */
 .meta-wrapper {
     position: absolute;
     width: 100%;
@@ -146,9 +144,9 @@ body {
 .label-ampm {
     position: absolute;
     bottom: 15px;
-    left: 20px;
+    left: 18px;
     font-size: 18px;
-    color: var(--text-color); /* همرنگ اعداد */
+    color: var(--text-color);
     font-family: monospace;
     font-weight: bold;
 }
@@ -158,7 +156,7 @@ body {
     bottom: 15px;
     right: 18px;
     font-size: 18px;
-    color: var(--text-color); /* همرنگ اعداد */
+    color: var(--text-color);
     font-family: monospace;
     font-weight: bold;
     text-transform: uppercase;
@@ -207,7 +205,6 @@ body {
 
         element.classList.add('flipping');
 
-        // زمان پاکسازی باید با زمان انیمیشن هماهنگ باشد
         setTimeout(() => {
             topWrapper.innerText = newValue;
             bottomWrapper.innerText = newValue;
@@ -215,7 +212,7 @@ body {
             element.removeChild(topNew);
             element.removeChild(bottomNew);
             element.classList.remove('flipping');
-        }, 900); // برابر با 0.9 ثانیه CSS
+        }, 900); 
     }
 
     function updateClock() {
