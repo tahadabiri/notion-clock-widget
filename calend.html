@@ -3,14 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dark Mini Calendar - Two-Tone</title>
+<title>Fixed Notion Calendar</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
+/* --- فیکس‌های حیاتی برای نوشن --- */
+html, body {
+    background-color: transparent !important; /* شفافیت اجباری */
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* حذف اسکرول‌بار */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* حذف اسکرول‌بار در مرورگرهای وبکیت */
+::-webkit-scrollbar {
+    display: none;
+}
+
 :root {
-    --bg-color: transparent;
-    --card-bg: #1e1e1e; /* رنگ پس‌زمینه بدنه اصلی ویجت */
-    --header-bg: #2a2a2a; /* رنگ پس‌زمینه قسمت بالای ویجت (هدر) */
+    --card-bg: #1e1e1e;
+    --header-bg: #2a2a2a;
     --text-primary: #ffffff;
     --text-secondary: #ffffff80;
     --accent-bg: #3a3a3a;
@@ -19,42 +36,33 @@
 }
 
 body {
-    margin: 0;
-    background-color: var(--bg-color);
     font-family: 'Inter', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
 }
 
 .calendar-widget {
-    width: 320px;
+    width: 300px; /* کمی کوچکتر کردم تا مطمئن شویم اسکرول نمی‌خورد */
     background: var(--card-bg);
     border-radius: var(--border-radius);
-    /* پدینگ بالا را حذف کردم تا هدر به بالا بچسبد */
-    padding: 0 20px 20px 20px;
+    padding: 0 0 20px 0; /* پدینگ پایین */
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     color: var(--text-primary);
     user-select: none;
-    overflow: hidden; /* برای گرد شدن گوشه‌های هدر */
+    overflow: hidden; /* گوشه‌های هدر گرد بماند */
+    border: 1px solid rgba(255,255,255,0.05); /* بوردر خیلی ظریف برای تمیز دیده شدن */
 }
 
-/* هدر با رنگ متفاوت */
+/* هدر دو رنگ */
 .header {
-    background-color: var(--header-bg); /* رنگ متفاوت */
+    background-color: var(--header-bg);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* پدینگ و مارجین برای تنظیم فاصله */
     padding: 15px 20px;
-    margin: 0 -20px 20px -20px; /* کشیدن هدر به لبه‌ها */
-    border-radius: var(--border-radius) var(--border-radius) 0 0; /* گرد شدن گوشه‌های بالا */
+    margin-bottom: 15px;
 }
 
 .month-year-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
 }
 
@@ -62,16 +70,16 @@ body {
     background: none;
     border: none;
     color: var(--text-secondary);
-    font-size: 20px;
+    font-size: 18px;
     cursor: pointer;
     padding: 0;
     border-radius: 50%;
-    transition: all 0.2s;
+    width: 30px;
+    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    transition: all 0.2s;
 }
 
 .nav-btn:hover {
@@ -79,55 +87,42 @@ body {
     background-color: var(--hover-bg);
 }
 
-/* شبکه روزها */
 .days-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
+    gap: 2px; /* فاصله کمتر */
     text-align: center;
+    padding: 0 15px; /* پدینگ داخلی شبکه */
 }
 
-/* نام روزهای هفته */
 .day-label {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-secondary);
     font-weight: 600;
     margin-bottom: 10px;
 }
 
-/* سلول‌های اعداد */
 .day-cell {
-    height: 36px;
+    height: 34px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 15px;
+    font-size: 14px;
     border-radius: 50%;
     cursor: default;
     transition: all 0.2s;
     font-weight: 400;
 }
 
-/* روزهای ماه جاری */
-.day-cell.current-month {
-    color: var(--text-primary);
-}
+.day-cell.current-month { color: var(--text-primary); }
+.day-cell.other-month { color: var(--text-secondary); opacity: 0.4; }
 
-/* روزهای ماه قبل و بعد */
-.day-cell.other-month {
-    color: var(--text-secondary);
-    opacity: 0.5;
-}
+.day-cell.current-month:hover { background-color: var(--hover-bg); }
 
-/* هاور روی روزهای ماه جاری */
-.day-cell.current-month:hover {
-    background-color: var(--hover-bg);
-}
-
-/* روز جاری (Today) */
 .day-cell.today {
     background-color: var(--accent-bg);
-    font-weight: 600;
+    font-weight: 700;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 </style>
@@ -141,14 +136,11 @@ body {
         <button class="nav-btn" id="nextBtn">&gt;</button>
     </div>
     
-    <div class="days-grid" id="calendarGrid">
-        </div>
+    <div class="days-grid" id="calendarGrid"></div>
 </div>
 
 <script>
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const dayLabels = ["S", "M", "T", "W", "T", "F", "S"];
 
     let displayedDate = new Date();
@@ -158,7 +150,6 @@ body {
         const month = displayedDate.getMonth();
         
         document.getElementById('monthYearDisplay').innerText = `${monthNames[month]} ${year}`;
-
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = '';
 
@@ -172,50 +163,41 @@ body {
         const firstDayOfMonth = new Date(year, month, 1).getDay();
         const daysInCurrentMonth = new Date(year, month + 1, 0).getDate();
         const daysInPrevMonth = new Date(year, month, 0).getDate();
-
         const today = new Date();
 
+        // روزهای ماه قبل
         for (let i = firstDayOfMonth - 1; i >= 0; i--) {
-            const dayDiv = createDayCell(daysInPrevMonth - i, 'other-month');
-            grid.appendChild(dayDiv);
+            grid.appendChild(createDayCell(daysInPrevMonth - i, 'other-month'));
         }
 
+        // روزهای ماه جاری
         for (let d = 1; d <= daysInCurrentMonth; d++) {
-            const dayDiv = createDayCell(d, 'current-month');
+            const cell = createDayCell(d, 'current-month');
             if (d === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
-                dayDiv.classList.add('today');
+                cell.classList.add('today');
             }
-            grid.appendChild(dayDiv);
+            grid.appendChild(cell);
         }
 
-        const totalCellsFilled = firstDayOfMonth + daysInCurrentMonth;
-        const remainingCells = 42 - totalCellsFilled;
-
-        for (let d = 1; d <= remainingCells; d++) {
-             const dayDiv = createDayCell(d, 'other-month');
-             grid.appendChild(dayDiv);
+        // پر کردن خانه های خالی
+        const totalCells = firstDayOfMonth + daysInCurrentMonth;
+        const remaining = 42 - totalCells;
+        for (let d = 1; d <= remaining; d++) {
+             grid.appendChild(createDayCell(d, 'other-month'));
         }
     }
 
-    function createDayCell(number, typeClass) {
-        const dayDiv = document.createElement('div');
-        dayDiv.className = `day-cell ${typeClass}`;
-        dayDiv.innerText = number;
-        return dayDiv;
+    function createDayCell(num, type) {
+        const div = document.createElement('div');
+        div.className = `day-cell ${type}`;
+        div.innerText = num;
+        return div;
     }
 
-    document.getElementById('prevBtn').addEventListener('click', () => {
-        displayedDate.setMonth(displayedDate.getMonth() - 1);
-        renderCalendar();
-    });
-
-    document.getElementById('nextBtn').addEventListener('click', () => {
-        displayedDate.setMonth(displayedDate.getMonth() + 1);
-        renderCalendar();
-    });
+    document.getElementById('prevBtn').addEventListener('click', () => { displayedDate.setMonth(displayedDate.getMonth() - 1); renderCalendar(); });
+    document.getElementById('nextBtn').addEventListener('click', () => { displayedDate.setMonth(displayedDate.getMonth() + 1); renderCalendar(); });
 
     renderCalendar();
-
 </script>
 
 </body>
