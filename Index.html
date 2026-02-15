@@ -3,147 +3,245 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notion Clock & Calendar</title>
+<title>Perfect Fliqlo</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
 
 <style>
+:root {
+    --bg-color: #000;
+    --card-bg: #1a1a1a; /* رنگ پس‌زمینه کارت‌ها */
+    --text-color: #ddd; /* رنگ اعداد و متن‌ها */
+    
+    /* سایزها را منطقی کردم تا عدد داخل کادر جا شود */
+    --card-width: 200px;
+    --card-height: 300px;
+    --font-size: 190px; /* فونت کوچکتر شد تا خط برش درست دیده شود */
+    
+    --border-radius: 16px;
+    --anim-speed: 0.9s; /* انیمیشن کندتر و سنگین‌تر */
+}
+
 body {
     margin: 0;
-    background: #1c1c1c;
-    font-family: 'Segoe UI', sans-serif;
-    color: white;
+    background: var(--bg-color);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    font-family: 'Oswald', sans-serif;
+    overflow: hidden;
 }
 
-/* Container */
-.widget {
-    background: #2a2a2a;
-    padding: 30px;
-    border-radius: 20px;
-    width: 320px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
-
-/* Clock */
 .clock {
-    text-align: center;
-    margin-bottom: 25px;
+    display: flex;
+    gap: 20px;
+    perspective: 1500px;
 }
 
-.time {
-    font-size: 60px;
+.flip-unit {
+    position: relative;
+    width: var(--card-width);
+    height: var(--card-height);
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    color: var(--text-color);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); /* سایه طبیعی‌تر */
+}
+
+/* خط وسط */
+.flip-unit::before {
+    content: '';
+    position: absolute;
+    top: 52%;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #000;
+    z-index: 10;
+    transform: translateY(-50%);
+}
+
+/* استایل کلی نیمه‌ها */
+.top, .bottom, .top-new, .bottom-new {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    overflow: hidden;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background: var(--card-bg);
+}
+
+/* نگهدارنده عدد برای تراز دقیق */
+.digit-wrapper {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 200%; /* ارتفاع دو برابر */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-size);
+    font-weight: 700;
+    line-height: 1; /* این خط حیاتی است */
+}
+
+/* نیمه بالا */
+.top, .top-new {
+    top: 0;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    transform-origin: bottom;
+    z-index: 1;
+}
+.top .digit-wrapper, .top-new .digit-wrapper {
+    top: 0;
+}
+
+/* نیمه پایین */
+.bottom, .bottom-new {
+    bottom: 0;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    transform-origin: top;
+    z-index: 0;
+}
+.bottom .digit-wrapper, .bottom-new .digit-wrapper {
+    bottom: 0;
+}
+
+/* انیمیشن‌ها */
+.top-new { z-index: 2; transform: rotateX(0deg); }
+.bottom-new { z-index: 1; transform: rotateX(90deg); }
+
+.flipping .top {
+    animation: flip-top var(--anim-speed) ease-in-out forwards;
+    z-index: 3;
+}
+
+.flipping .bottom-new {
+    animation: flip-bottom var(--anim-speed) ease-in-out forwards;
+    animation-delay: calc(var(--anim-speed) * 0.45); /* هماهنگی دقیق با سرعت جدید */
+    z-index: 4;
+}
+
+@keyframes flip-top {
+    0% { transform: rotateX(0deg); }
+    100% { transform: rotateX(-90deg); }
+}
+
+@keyframes flip-bottom {
+    0% { transform: rotateX(90deg); }
+    100% { transform: rotateX(0deg); }
+}
+
+/* لیبل‌ها (AM/PM و روز هفته) */
+.meta-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.label-ampm {
+    position: absolute;
+    bottom: 15px;
+    left: 20px;
+    font-size: 18px;
+    color: var(--text-color); /* همرنگ اعداد */
+    font-family: monospace;
     font-weight: bold;
-    letter-spacing: 2px;
 }
 
-.date {
-    font-size: 14px;
-    color: #bbbbbb;
-}
-
-/* Calendar */
-.calendar {
-    margin-top: 10px;
-}
-
-.calendar-header {
-    text-align: center;
-    margin-bottom: 10px;
+.label-day {
+    position: absolute;
+    bottom: 15px;
+    right: 18px;
+    font-size: 18px;
+    color: var(--text-color); /* همرنگ اعداد */
+    font-family: monospace;
     font-weight: bold;
+    text-transform: uppercase;
 }
 
-.calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    text-align: center;
-    font-size: 12px;
-}
-
-.day {
-    padding: 8px;
-    border-radius: 8px;
-}
-
-.today {
-    background: #ffffff;
-    color: #000;
-    font-weight: bold;
-}
 </style>
 </head>
-
 <body>
 
-<div class="widget">
-    <div class="clock">
-        <div class="time" id="time"></div>
-        <div class="date" id="date"></div>
+<div class="clock">
+    <div class="flip-unit" id="hours">
+        <div class="top"><div class="digit-wrapper">12</div></div>
+        <div class="bottom"><div class="digit-wrapper">12</div></div>
+        <div class="meta-wrapper">
+             <div class="label-ampm" id="ampm">AM</div>
+        </div>
     </div>
 
-    <div class="calendar">
-        <div class="calendar-header" id="monthYear"></div>
-        <div class="calendar-grid" id="calendar"></div>
+    <div class="flip-unit" id="minutes">
+        <div class="top"><div class="digit-wrapper">00</div></div>
+        <div class="bottom"><div class="digit-wrapper">00</div></div>
+        <div class="meta-wrapper">
+            <div class="label-day" id="day">SUN</div>
+        </div>
     </div>
 </div>
 
 <script>
-function updateClock() {
-    const now = new Date();
+    function updateFlipUnit(elementId, newValue) {
+        const element = document.getElementById(elementId);
+        const topWrapper = element.querySelector('.top .digit-wrapper');
+        const bottomWrapper = element.querySelector('.bottom .digit-wrapper');
+        
+        if (topWrapper.innerText === newValue) return;
 
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
+        const topNew = document.createElement('div');
+        topNew.className = 'top-new';
+        topNew.innerHTML = `<div class="digit-wrapper">${newValue}</div>`;
+        
+        const bottomNew = document.createElement('div');
+        bottomNew.className = 'bottom-new';
+        bottomNew.innerHTML = `<div class="digit-wrapper">${newValue}</div>`;
 
-    document.getElementById('time').innerText = `${hours}:${minutes}`;
-    document.getElementById('date').innerText = now.toDateString();
-}
+        element.appendChild(topNew);
+        element.appendChild(bottomNew);
 
-function generateCalendar() {
-    const now = new Date();
-    const month = now.getMonth();
-    const year = now.getFullYear();
+        element.classList.add('flipping');
 
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    document.getElementById('monthYear').innerText =
-        now.toLocaleString('default', { month: 'long' }) + " " + year;
-
-    const calendar = document.getElementById('calendar');
-    calendar.innerHTML = "";
-
-    const weekdays = ["S","M","T","W","T","F","S"];
-    weekdays.forEach(day => {
-        const div = document.createElement('div');
-        div.classList.add('day');
-        div.style.opacity = "0.6";
-        div.innerText = day;
-        calendar.appendChild(div);
-    });
-
-    for (let i = 0; i < firstDay; i++) {
-        const empty = document.createElement('div');
-        calendar.appendChild(empty);
+        // زمان پاکسازی باید با زمان انیمیشن هماهنگ باشد
+        setTimeout(() => {
+            topWrapper.innerText = newValue;
+            bottomWrapper.innerText = newValue;
+            
+            element.removeChild(topNew);
+            element.removeChild(bottomNew);
+            element.classList.remove('flipping');
+        }, 900); // برابر با 0.9 ثانیه CSS
     }
 
-    for (let day = 1; day <= daysInMonth; day++) {
-        const div = document.createElement('div');
-        div.classList.add('day');
-        div.innerText = day;
+    function updateClock() {
+        const now = new Date();
+        
+        let h = now.getHours();
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const ampmStr = h >= 12 ? "PM" : "AM";
+        
+        h = h % 12;
+        h = h ? h : 12; 
+        const hStr = String(h).padStart(2, '0');
 
-        if (day === now.getDate()) {
-            div.classList.add('today');
-        }
+        const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+        const dayStr = days[now.getDay()];
 
-        calendar.appendChild(div);
+        updateFlipUnit('hours', hStr);
+        updateFlipUnit('minutes', m);
+        
+        document.getElementById('ampm').innerText = ampmStr;
+        document.getElementById('day').innerText = dayStr;
     }
-}
 
-updateClock();
-generateCalendar();
-setInterval(updateClock, 1000);
+    setInterval(updateClock, 1000);
+    updateClock();
+
 </script>
 
 </body>
