@@ -3,17 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Transparent Fliqlo</title>
+<meta name="color-scheme" content="dark">
+<title>Fixed Dark Fliqlo</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
 
 <style>
 :root {
-    /* تغییر مهم: پس‌زمینه شفاف شد */
-    --bg-color: transparent;
+    /* تغییر حیاتی: رنگ دقیق پس‌زمینه نوشن */
+    --bg-color: #191919; 
     
-    --card-bg: #1a1a1a; /* کارت‌ها تیره می‌مانند */
-    --text-color: #ddd;
+    --card-bg: #202020; /* کمی روشن‌تر از پس‌زمینه */
+    --text-color: #e0e0e0;
     
+    /* تنظیمات سایز */
     --card-width: 200px;
     --card-height: 300px;
     --font-size: 190px;
@@ -27,7 +29,8 @@ html, body {
     padding: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--bg-color); /* شفاف */
+    /* اعمال رنگ فیکس شده */
+    background-color: var(--bg-color) !important; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -48,21 +51,23 @@ html, body {
     background: var(--card-bg);
     border-radius: var(--border-radius);
     color: var(--text-color);
-    /* سایه را کمی قوی‌تر کردم تا روی پس‌زمینه سفید نوشن هم خودش را جدا کند */
-    box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5); 
+    /* یک بوردر خیلی محو برای محو شدن لبه‌ها در پس‌زمینه */
+    border: 1px solid #2a2a2a; 
 }
 
 /* خط وسط */
 .flip-unit::before {
     content: '';
     position: absolute;
-    top: 53%;
+    top: 50%; /* اصلاح شد به 50% دقیق */
     left: 0;
     width: 100%;
     height: 3px;
-    background: #000;
+    background: #111;
     z-index: 10;
     transform: translateY(-50%);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.05);
 }
 
 .top, .bottom, .top-new, .bottom-new {
@@ -146,7 +151,7 @@ html, body {
     bottom: 15px;
     left: 18px;
     font-size: 18px;
-    color: var(--text-color);
+    color: #666; /* کمی تیره‌تر کردم که شیک‌تر شود */
     font-family: monospace;
     font-weight: bold;
 }
@@ -156,7 +161,7 @@ html, body {
     bottom: 15px;
     right: 18px;
     font-size: 18px;
-    color: var(--text-color);
+    color: #666;
     font-family: monospace;
     font-weight: bold;
     text-transform: uppercase;
